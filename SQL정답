@@ -1,0 +1,191 @@
+/*
+	날짜 : 2020/05/20
+	이름 : 김철학
+	내용 : SQL 실습과제
+	참고 : https://github.com/chhak/Sql 
+*/
+#실습1
+CREATE TABLE `Book` (
+	`bookid`		INT PRIMARY KEY AUTO_INCREMENT,
+	`bookname`	VARCHAR(50),
+	`publisher` VARCHAR(20),
+	`price`		INT
+);
+
+#실습2 
+CREATE TABLE `Customer` (
+	`custid`   INT AUTO_INCREMENT PRIMARY KEY,
+	`name` 	  VARCHAR(20),
+	`address`  VARCHAR(20),
+	`phone` 	  CHAR(13)
+);
+
+#실습3
+CREATE TABLE `Order` (
+	`orderid`		INT PRIMARY KEY AUTO_INCREMENT,
+	`custid`			INT,
+	`bookid`			INT,
+	`saleprice`		INT,
+	`orderdate`		DATE
+);
+
+INSERT INTO `Order` (`custid`, `bookid`, `saleprice`, `orderdate`) VALUES (1,1,6000, '2014-07-01');
+INSERT INTO `Order` (`custid`, `bookid`, `saleprice`, `orderdate`) VALUES (1,1,6000, '2014-07-01');
+INSERT INTO `Order` (`custid`, `bookid`, `saleprice`, `orderdate`) VALUES (1,1,6000, '2014-07-01');
+INSERT INTO `Order` (`custid`, `bookid`, `saleprice`, `orderdate`) VALUES (1,1,6000, '2014-07-01');
+INSERT INTO `Order` (`custid`, `bookid`, `saleprice`, `orderdate`) VALUES (1,1,6000, '2014-07-01');									   
+
+
+#실습4 
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+INSERT INTO `Book` (`bookname`, `publisher`, `price`) VALUES ('축구의 역사', '굿스포츠', 7000);
+
+INSERT INTO `Customer` (`name`, `address`, `phone`) VALUES ('박지성', '영국 맨체스터', '000-5000-0001');
+INSERT INTO `Customer` (`name`, `address`, `phone`) VALUES ('박지성', '영국 맨체스터', '000-5000-0001');
+INSERT INTO `Customer` (`name`, `address`, `phone`) VALUES ('박지성', '영국 맨체스터', '000-5000-0001');
+INSERT INTO `Customer` (`name`, `address`, `phone`) VALUES ('박지성', '영국 맨체스터', '000-5000-0001');
+INSERT INTO `Customer` (`name`, `address`) VALUES ('박세리', '대한민국 대전');
+
+
+#실습5 
+SELECT * FROM `Book`;
+
+#실습6 
+SELECT DISTINCT `publisher` FROM `Book`;
+
+#실습7 
+SELECT * FROM `Book` WHERE `price` < 20000;
+
+#실습8
+SELECT * FROM `Book` WHERE `price` >= 10000 AND `price` <= 20000;
+SELECT * FROM `Book` WHERE `price` BETWEEN 10000 AND 20000;
+
+#실습9 
+SELECT * FROM `Book` WHERE `publisher` = '굿스포츠' 
+							OR `publisher` = '대한미디어';
+							
+SELECT * FROM `Book` WHERE `publisher` IN('굿스포츠', '대한미디어');
+
+#실습10 
+SELECT `publisher` FROM `Book` WHERE `bookname`='축구의 역사';
+
+#실습11
+SELECT `publisher` FROM `Book` WHERE `bookname` LIKE '%축구%';
+
+#실습12
+SELECT * FROM `Book` WHERE `bookname` LIKE '_구%';
+
+#실습13
+SELECT * FROM `Book` WHERE `price` >= 20000 
+							AND `bookname` LIKE '%축구%';
+ 
+#실습14 
+SELECT * FROM `Book` ORDER BY `bookname` ASC;
+SELECT * FROM `Book` ORDER BY `bookname` DESC;
+
+#실습15
+SELECT * FROM `Book` ORDER BY `price`, `bookname`;
+
+#실습16
+SELECT * FROM `Book` ORDER BY `price` DESC, `publisher` ASC;
+
+#실습17 
+SELECT SUM(`saleprice`) AS `총판매액` FROM `Orders`;
+
+#실습18 
+SELECT SUM(`saleprice`) AS `총판매액` FROM `Orders` WHERE `custid`=2;
+
+#실습19
+SELECT SUM(`saleprice`) AS `총판매액`, 
+		 AVG(`saleprice`) AS `평균`,
+		 MIN(`saleprice`) AS `최저가`,
+ 		 MAX(`saleprice`) AS `최고가`
+		 FROM `Orders`;
+
+#실습20
+SELECT COUNT(*) AS `판매건수` FROM `Orders`;
+
+#실습21 
+SELECT `custid`, COUNT(*) AS `수량` FROM `Orders`
+WHERE `saleprice` >= 8000
+GROUP BY `custid`
+HAVING `수량` >= 2;
+
+#실습22
+SELECT * FROM `Customer` 
+JOIN `Orders` ON `Orders`.custid = `Customer`.custid;
+
+SELECT * FROM `Customer` AS a
+JOIN `Orders` AS b ON b.custid = a.custid;
+
+SELECT * FROM `Customer` 
+JOIN `Orders` USING(`custid`);
+
+#실습23 
+SELECT * FROM `Customer` AS a
+JOIN `Orders` AS b 
+ON a.custid = b.custid
+ORDER BY b.custid;
+
+#실습24
+SELECT `name`, `saleprice` FROM `Customer` 
+JOIN `Orders` USING(`custid`);
+
+#실습25 
+SELECT `name`, SUM(`saleprice`) FROM `Customer`
+JOIN `Orders` USING(`custid`)
+GROUP BY `name`
+ORDER BY `name`;
+
+#실습26
+SELECT `name`, `bookname` 
+FROM 
+	`Customer` AS a, 
+	`Orders`   AS b, 
+	`Book`     AS c
+WHERE 
+	a.custid = b.custid AND
+	b.bookid = c.bookid;
+
+
+#실습27
+SELECT `name`, `bookname` 
+FROM 
+	`Customer` AS a,
+	`Orders`	  AS b,
+	`Book`	  AS c
+WHERE
+	a.custid = b.custid AND
+	b.bookid = c.bookid AND
+	b.saleprice = 20000;
+
+#실습28
+SELECT `bookname` FROM `Book` ORDER BY price DESC LIMIT 1;
+
+SELECT `bookname` FROM `Book` 
+WHERE price=(SELECT MAX(price) FROM `Book`);
+
+
+#실습29
+INSERT INTO `Book` (`bookname`, `publisher`, `price`)
+ VALUES ('스포츠의학', '한솔의학서적', 90000);
+
+#실습30
+INSERT INTO `Book` (`bookname`, `publisher`)
+ VALUES ('스포츠의학', '한솔의학서적');
+
+#실습31
+UPDATE `Customer` 
+SET `address`='대한민국 부산'
+WHERE `custid`=5;
+
+#실습32
+DELETE FROM `Customer` WHERE `custid`=5;
